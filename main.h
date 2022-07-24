@@ -13,9 +13,7 @@
 /* function prototypes */
 int command(char *cmd);
 char *prep_string(char *cmd);
-
-
-
-
+char *is_cmd_exist(char *cmd);
+char *strcpycat(char *dest, char *str);
 
 #endif
