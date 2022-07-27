@@ -9,6 +9,14 @@ int main(int ac, char **argv)
 {
 	size_t buffsize;
 	char *buff, *cmd;
+	
+	/* -- interactive vs non interacitve
+	int fd, s;
+	fd = open(argv[0], O_RDONLY);
+	s = isatty(fd);
+	if (s == 1)
+		printf("is not a tty!\n");
+	*/
 
 	while (1)
 	{
@@ -19,20 +27,16 @@ int main(int ac, char **argv)
 			break;
 
 		 cmd = prep_string(buff);
+
+		 cmd = is_cmd_exist(cmd);
 		 if (cmd == NULL)
-		 {
-			 printf("%s: 1: %s: not found\n", argv[0], cmd);
-		 }
+			 perror(argv[0]);
 		 else
-		 {
-			 cmd = is_cmd_exist(cmd);
-			 if (cmd == NULL)
-				 printf("./ss: %s: Temporary Error Message, command %s not found.\n", buff, buff);
-			 else
-				 command(cmd);
-		 }
-		/* add a check if cmd exists or exists in $PATH */
+			 command(cmd);
 	}
+	
+	/* close(fd); */
+
 	return (0);
 }
 
@@ -68,8 +72,12 @@ char *is_cmd_exist(char *cmd)
 	struct stat st;
 	char *env_path_var, *arg, *full_path;
 
+	if (stat(cmd, &st) == 0)
+		return(cmd);
+
 	env_path_var = strdup(getenv("PATH")); /* getend - not allowed in final project */
 	arg = strtok(env_path_var, ":");
+
 
 	while (arg != NULL)
 	{
@@ -97,12 +105,10 @@ int command(char *cmd)
 	my_pid = fork();
 	if (my_pid == -1)
 	{
-		/* error */
 		return (EXIT_FAILURE);
 	}
 	if (my_pid == 0)
 	{
-		/* child */
 		if (execve(argv[0], argv, NULL) == -1)
 		{
 			perror("Error: execve failed in command function.");
@@ -111,9 +117,10 @@ int command(char *cmd)
 	}
 	else
 	{
-		/* parent */
 		wait(NULL);
 	}
+
+	return (EXIT_SUCCESS);
 }
 
 char *strcpycat(char *dest, char *str)
@@ -126,7 +133,7 @@ char *strcpycat(char *dest, char *str)
 	if (new_str == NULL)
 	{
 		/* malloc fail */
-		printf("Mallac Fail in: strcpycat()");
+		perror("Malloc Fail in strcpycat()");
 		return(NULL);
 	}
 	
