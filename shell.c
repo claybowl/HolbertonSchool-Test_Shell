@@ -1,9 +1,9 @@
 #include "main.h"
 /** THINGS 2 FIX:
-*	- prep_string: uses strlen, implement _strlen func
 *	- shell: uses printf, implement _printf (CLAYTON IS ON IT)
 *	- is_cmd_exist: uses getenv, implement builtin? env func
-*	- strcpycat: has strlen + sizeof: i dont think i can use sizeof, possibly hardcode size of char if nessessary
+*	- size of func? might need to make own
+*	- handle EOF!
 * 	- GLOBAL ARGV!
 */
 
@@ -45,7 +45,7 @@ int shell(int ac, char **argv)
 			printf("($) ");
 			getline(&buff, &buffsize, stdin);
 
-			if (strcmp (buff, "exit\n") == 0)
+			if (_strcmp(buff, "exit\n") == 0)
 				break;
 
 			 cmd = prep_string(buff);
@@ -63,7 +63,7 @@ int shell(int ac, char **argv)
 	{
 		while(getline(&buff, &buffsize, stdin) != -1)
 		{
-			if (strcmp (buff, "exit\n") == 0)
+			if (_strcmp(buff, "exit\n") == 0)
 				break;
 
 			cmd = prep_string(buff);
@@ -95,7 +95,7 @@ char *prep_string(char *cmd)
 	while (*cmd == ' ')
 		cmd++;
 
-	for (int i = 0; i < strlen(cmd); i++)
+	for (int i = 0; i < _strlen(cmd); i++)
 	{
 		if (cmd[i] == '\n')
 		{
@@ -114,7 +114,7 @@ char *is_cmd_exist(char *cmd)
 	if (stat(cmd, &st) == 0)
 		return(cmd);
 
-	env_path_var = strdup(getenv("PATH")); /* getenv - not allowed in final project */
+	env_path_var = _strdup(getenv("PATH")); /* getenv - not allowed in final project */
 	arg = strtok(env_path_var, ":");
 
 
@@ -166,7 +166,7 @@ char *strcpycat(char *dest, char *str)
 	char *new_str;
 	int i = 0, x = 0;
 
-	new_str = malloc((strlen(dest) + strlen(str) + 2) * sizeof(char));
+	new_str = malloc((_strlen(dest) + _strlen(str) + 2) * sizeof(char));
 
 	if (new_str == NULL)
 	{
