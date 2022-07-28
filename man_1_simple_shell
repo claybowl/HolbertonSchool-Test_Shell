@@ -1,100 +1,44 @@
-# man test_script
-test_script(1)()                                                                                             test_script(1)()
+SIMPLE SHELL MAN
 
-test_script - user interface to perform some task
+NAME
+        Simple shell program - hsh
+COMPILING
+        gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 
 SYNOPSIS
-       test_script {OBJECT} [OPTIONS]
+       $ [command_name] {arguments}
+
+EXECUTING
+        ./hsh
 
 DESCRIPTION
-       test_script  Write detailed description of the tool here. This script can perform all these tasks and must be executed
-       as root user. More information on the tasks performed is explained below:
-
-              - Performs task 1
-              - Performs task 2
-              - Performs task 3
-              - Performs task 4
-
-       This is a test script for man page template. Place brief description here.
-
-OBJECT
-       --a1|-arg1 <arg1_value>
-              Provide arg1_value. Must be integer. Provide more hint for the user related to arg1_value
-
-       --a2|-arg2  <arg2_value>
-              Provide arg2_value. Must be integer. Provide more hint for the user related to arg2_value
-
-       --a3|-arg3 value1,value2,value3,..
-
-       Different man page examples formats
-
-       Display in normal format with regular TAB using .RS and TAB value of 1.2i
-
-                   TEAM1 - team1_value1, team1_value2
-
-                   TEAM2 - team2_value1, team2_value2
-
-       Display content in Table Format. Floating in Left
-
-                   ┌──────┬────────────────────────────┐
-                   │TEAM  │           Value            │
-                   ├──────┼────────────────────────────┤
-                   │TEAM1 │ team1_value1, team1_value2 │
-                   │TEAM2 │ team2_value1, team2_value2 │
-                   │TEAM3 │ team3_value1, team3_value2 │
-                   │TEAM4 │ team4_value1, team4_value2 │
-                   └──────┴────────────────────────────┘
-
-       Display content in a Tabular format
-
-                   TEAM              Value                  Comment
-                   ─────────────────────────────────────────────────────
-
-                   TEAM1   team1_value1, team1_value2   Value for team1
-                   TEAM2   team2_value1, team2_value2   Value for team2
-                   TEAM3   team3_value1, team3_value2   Value for team3
-                   TEAM4   team4_value1, team4_value2   Value for team4
-
-              Multiple values can be added within inverted commas separated by comma for different teams
+        Our shell program is an implementation of a command interpreter that executes commands
+        that are taken from the standard input. Our shell program is based off of the original,
+        and brilliant, UNIX shell written by Ken Thompson.
 
 OPTIONS
-       --arg4 <arg4_value>
-              Put description for argument 4 value. The is optional argument.
+        exit - exits the shell.
+        env - lists environmental variables.
 
-       -h|--help
-              Prints help
-
-FILES
-       /etc/test_script.conf
-
-       /usr/bin/test_script
+USAGE
+        Our shell has dual usage. It can be used in interactive mode where "$" appears to the
+        user to execute a command. This repeats until the end of the hsh process (using exit
+        or ctrl + d). There is also a non-interactive mode where it sends the output of a
+        command as an input to the ./hsh program using a pipe command.
 
 EXAMPLES
-       test_script --arg1 my_arg1 --arg4 'team1_value1,team2_value1'
+        Interactive mode:
+                                ./hsh
+        Non-interactive mode:
+                                echo "ls" | ./hsh
 
-              Run test_script with my_arg1 value for team1 value
+                                        - This shows the list of files or directories that
+                                          you have in your current directory in a
+                                          non-interactive way.
 
-       test_script --arg2 my_arg2 --arg4 'team2_value1,team2_value2'
-
-              Run test_script with my_arg2 value for team2 value
-
-DIAGNOSTICS
-       The activity performed using this utility is logged in the file /var/log/test_script
 
 EXIT STATUS
-       0      Success
+        exit or ctrl + d.
 
-       1      Success but reboot required
-
-       2      Success but no reboot required
-
-SEE ALSO
-       test_script1(1), test_script2(1), test_script3 (1)
-
-COPYRIGHT
-       Copyright 2019 GoLinuxCloud. All rights reserved https://www.golinuxcloud.com
-
-CREDITS
-       This man page is created only for demonstration purpose by Deepak Prasad <admin@golinuxcloud.com>
-
-       GoLinuxCloud test_script(1)
+AUTHORS
+        2022 - Blake Willis, Clayton Christian
