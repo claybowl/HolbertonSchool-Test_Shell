@@ -14,9 +14,9 @@
  * 
  * Return: always 0
  */
-int main(int ac, char **av)
+int main(__attribute__((unused))int ac, char **av)
 {
-	shell(ac, av);
+	shell(av);
 	return (EXIT_SUCCESS);
 }
 
@@ -25,7 +25,7 @@ int main(int ac, char **av)
  *
  * Return: 
  */
-int shell(int ac, char **argv)
+int shell(char **argv)
 {
 	size_t buffsize;
 	char *buff, *cmd;
@@ -72,8 +72,10 @@ int shell(int ac, char **argv)
 			if (cmd == NULL)
 				perror(argv[0]);
 			else
+			{
 				command(cmd);
 				free(cmd);
+			}
 		}
 
 		return(0);
@@ -95,7 +97,7 @@ char *prep_string(char *cmd)
 	while (*cmd == ' ')
 		cmd++;
 
-	for (int i = 0; i < _strlen(cmd); i++)
+	for (i = 0; i < _strlen(cmd); i++)
 	{
 		if (cmd[i] == '\n')
 		{
@@ -138,7 +140,10 @@ char *is_cmd_exist(char *cmd)
 int command(char *cmd)
 {
 	pid_t my_pid;
-	char *argv[] = {cmd, NULL};
+	char *argv[2];
+	
+	argv[0] = cmd;
+	argv[1] = NULL;
 
 	my_pid = fork();
 	if (my_pid == -1)
