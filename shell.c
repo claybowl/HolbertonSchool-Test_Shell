@@ -52,6 +52,9 @@ int shell(char **argv)
  */
 int non_interactive(char **argv)
 {
+	size_t buffsize = 0;
+	char *buff = NULL, *cmd;
+	
 	while (getline(&buff, &buffsize, stdin) != -1)
 	{
 		if (_strcmp(buff, "exit\n") == 0)
