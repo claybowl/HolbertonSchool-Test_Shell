@@ -1,34 +1,14 @@
 #include "main.h"
-/** THINGS 2 FIX:
-*	- shell: uses printf, implement _printf (CLAYTON IS ON IT)
-*	- is_cmd_exist: uses getenv, implement builtin? env func
-*	- size of func? might need to make own
-*	- handle EOF!
-* 	- GLOBAL ARGV!
-*/
-
-/* char **argv; */
-
-/**
- * main - main function
- * 
- * Return: always 0
- */
-int main(int ac, char **av)
-{
-	shell(ac, av);
-	return (EXIT_SUCCESS);
-}
 
 /**
  * shell - a simple terminal
- *
- * Return: 
+ * @argv: pointer list of args
+ * Return: 0
  */
-int shell(int ac, char **argv)
+int shell(char **argv)
 {
-	size_t buffsize;
-	char *buff, *cmd;
+	size_t buffsize = 0;
+	char *buff = NULL, *cmd;
 	int tty;
 
 	tty = isatty(STDIN_FILENO);
@@ -48,39 +28,48 @@ int shell(int ac, char **argv)
 			if (_strcmp(buff, "exit\n") == 0)
 				break;
 
-			 cmd = prep_string(buff);
-			 cmd = is_cmd_exist(cmd);
-
-			 if (cmd == NULL)
-				 perror(argv[0]);
-			 else
-				 command(cmd);
-		}
-
-		return (0);
-	}
-	else
-	{
-		while(getline(&buff, &buffsize, stdin) != -1)
-		{
-			if (_strcmp(buff, "exit\n") == 0)
-				break;
-
 			cmd = prep_string(buff);
 			cmd = is_cmd_exist(cmd);
 
 			if (cmd == NULL)
 				perror(argv[0]);
 			else
+			{
 				command(cmd);
 				free(cmd);
+			}
 		}
-
-		return(0);
+		return (0);
 	}
+	else
+		non_interactive(argv);
 }
+/**
+ * non_interactive - shell functionality for non interactive mode
+ *
+ * @argv: pointer array of args
+ * Return: 0
+ */
+int non_interactive(char **argv)
+{
+	while (getline(&buff, &buffsize, stdin) != -1)
+	{
+		if (_strcmp(buff, "exit\n") == 0)
+			break;
 
+		cmd = prep_string(buff);
+		cmd = is_cmd_exist(cmd);
 
+		if (cmd == NULL)
+			perror(argv[0]);
+		else
+		{
+			command(cmd);
+			free(cmd);
+		}
+	}
+	return (0);
+}
 
 /**
  * prep_string - takes a string, replaces newline with null byte
@@ -95,26 +84,32 @@ char *prep_string(char *cmd)
 	while (*cmd == ' ')
 		cmd++;
 
-	for (int i = 0; i < _strlen(cmd); i++)
+	for (i = 0; i < _strlen(cmd); i++)
 	{
 		if (cmd[i] == '\n')
 		{
 			cmd[i] = '\0';
-			return (cmd);	
+			return (cmd);
 		}
 	}
 	return (cmd);
 }
 
+/**
+ * is_cmd_exist - check if cmd exists in path or current directory
+ *
+ * @cmd: cmd to check
+ * Return: pointer to cmd
+ */
 char *is_cmd_exist(char *cmd)
 {
 	struct stat st;
 	char *env_path_var, *arg, *full_path;
 
 	if (stat(cmd, &st) == 0)
-		return(cmd);
+		return (cmd);
 
-	env_path_var = _strdup(getenv("PATH")); /* getenv - not allowed in final project */
+	env_path_var = _strdup(getenv("PATH")); /* getenv - not allowed */
 	arg = strtok(env_path_var, ":");
 
 
@@ -127,18 +122,26 @@ char *is_cmd_exist(char *cmd)
 			return (full_path);
 		}
 
-		free(full_path);
 		arg = strtok(NULL, ":");
+		free(full_path);
 	}
 
 	free(env_path_var);
 	return (NULL);
 }
 
+/**
+ * command - execute cmd
+ * @cmd: command to execute
+ * Return: 0
+ */
 int command(char *cmd)
 {
 	pid_t my_pid;
-	char *argv[] = {cmd, NULL};
+	char *argv[2];
+
+	argv[0] = cmd;
+	argv[1] = NULL;
 
 	my_pid = fork();
 	if (my_pid == -1)
@@ -159,35 +162,4 @@ int command(char *cmd)
 	}
 
 	return (EXIT_SUCCESS);
-}
-
-char *strcpycat(char *dest, char *str)
-{
-	char *new_str;
-	int i = 0, x = 0;
-
-	new_str = malloc((_strlen(dest) + _strlen(str) + 2) * sizeof(char));
-
-	if (new_str == NULL)
-	{
-		/* malloc fail */
-		perror("Malloc Fail in strcpycat()");
-		return(NULL);
-	}
-
-	while(dest[i])
-	{
-		new_str[i] = dest[i];
-		i++;
-	}
-	new_str[i] = '/';
-	i++;
-	while(str[x])
-	{
-		new_str[i + x] = str[x];
-		x++;
-	}
-	new_str[i + x] = '\0';
-
-	return (new_str);
 }

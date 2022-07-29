@@ -1,4 +1,41 @@
 #include "main.h"
+/**
+ * strcpycat - make new string, append str to dest
+ *
+ * @dest: string from PATH
+ * @str: command
+ * Return: pointer to new string
+ */
+char *strcpycat(char *dest, char *str)
+{
+	char *new_str;
+	int i = 0, x = 0;
+
+	new_str = malloc((_strlen(dest) + _strlen(str) + 2) * sizeof(char));
+
+	if (new_str == NULL)
+	{
+		/* malloc fail */
+		perror("Malloc Fail in strcpycat()");
+		return (NULL);
+	}
+
+	while (dest[i])
+	{
+		new_str[i] = dest[i];
+		i++;
+	}
+	new_str[i] = '/';
+	i++;
+	while (str[x])
+	{
+		new_str[i + x] = str[x];
+		x++;
+	}
+	new_str[i + x] = '\0';
+
+	return (new_str);
+}
 
 /**
   * _strlen - gets legnth of string
