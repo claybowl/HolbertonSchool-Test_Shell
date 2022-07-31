@@ -43,6 +43,7 @@ int shell(char **argv)
 	}
 	else
 		non_interactive(argv);
+	return (0);
 }
 /**
  * non_interactive - shell functionality for non interactive mode
