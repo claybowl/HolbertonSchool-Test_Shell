@@ -8,7 +8,7 @@
  */
 char *strcpycat(char *dest, char *str)
 {
-	char *new_str;
+	char *new_str = NULL;
 	int i = 0, x = 0;
 
 	new_str = malloc((_strlen(dest) + _strlen(str) + 2) * sizeof(char));
@@ -78,8 +78,8 @@ int _strcmp(char *s1, char *s2)
   */
 char *_strdup(char *str)
 {
-	char *s;
-	unsigned int i, size;
+	char *s = NULL;
+	unsigned int i = 0, size = 0;
 
 	if (str == NULL)
 		return (NULL);

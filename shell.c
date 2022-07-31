@@ -8,8 +8,8 @@
 int shell(char **argv)
 {
 	size_t buffsize = 0;
-	char *buff = NULL, *cmd, *tmp;
-	int tty;
+	char *buff = NULL, *cmd = NULL, *tmp = NULL;
+	int tty = 0;
 
 	tty = isatty(STDIN_FILENO);
 
@@ -27,7 +27,8 @@ int shell(char **argv)
 
 			if (_strcmp(buff, "exit\n") == 0)
 			{
-				free(buff);
+				if (buff != NULL)
+					free(buff);
 				break;
 			}
 
@@ -39,9 +40,11 @@ int shell(char **argv)
 			else
 			{
 				command(cmd);
-				free(buff);
-				free(cmd);
+				if (_strcmp(tmp,cmd) != 0)
+					free(cmd);
 			}
+			if (buff != NULL)
+				free(buff);
 		}
 		return (0);
 	}
@@ -58,7 +61,7 @@ int shell(char **argv)
 int non_interactive(char **argv)
 {
 	size_t buffsize = 0;
-	char *buff = NULL, *tmp, *cmd;
+	char *buff = NULL, *tmp = NULL, *cmd = NULL;
 
 	while (getline(&buff, &buffsize, stdin) != -1)
 	{
@@ -91,7 +94,7 @@ int non_interactive(char **argv)
  */
 char *prep_string(char *cmd)
 {
-	int i;
+	int i = 0;
 
 	while (*cmd == ' ')
 		cmd++;
@@ -122,6 +125,7 @@ char *is_cmd_exist(char *cmd)
 		return (cmd);
 
 	env_path_var = _strdup(getenv("PATH")); /* getenv - not allowed */
+	
 	arg = strtok(env_path_var, ":\0\n");
 
 	while (arg != NULL)
