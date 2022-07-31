@@ -12,7 +12,6 @@ int shell(char **argv)
 	int tty = 0;
 
 	tty = isatty(STDIN_FILENO);
-
 	if (tty == 2)
 	{
 		perror(argv[0]);
@@ -24,23 +23,20 @@ int shell(char **argv)
 		{
 			printf("$ ");
 			getline(&buff, &buffsize, stdin);
-
 			if (_strcmp(buff, "exit\n") == 0)
 			{
 				if (buff != NULL)
 					free(buff);
 				break;
 			}
-
 			tmp = prep_string(buff);
 			cmd = is_cmd_exist(tmp);
-
 			if (cmd == NULL)
 				perror(argv[0]);
 			else
 			{
 				command(cmd);
-				if (_strcmp(tmp,cmd) != 0)
+				if (_strcmp(tmp, cmd) != 0)
 					free(cmd);
 			}
 			if (buff != NULL)
@@ -125,7 +121,7 @@ char *is_cmd_exist(char *cmd)
 		return (cmd);
 
 	env_path_var = _strdup(getenv("PATH")); /* getenv - not allowed */
-	
+
 	arg = strtok(env_path_var, ":\0\n");
 
 	while (arg != NULL)
