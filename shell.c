@@ -26,7 +26,10 @@ int shell(char **argv)
 			getline(&buff, &buffsize, stdin);
 
 			if (_strcmp(buff, "exit\n") == 0)
+			{
+				free(buff);
 				break;
+			}
 
 			tmp = prep_string(buff);
 			cmd = is_cmd_exist(tmp);
@@ -60,7 +63,10 @@ int non_interactive(char **argv)
 	while (getline(&buff, &buffsize, stdin) != -1)
 	{
 		if (_strcmp(buff, "exit\n") == 0)
+		{
+			free(buff);
 			break;
+		}
 
 		tmp = prep_string(buff);
 		cmd = is_cmd_exist(tmp);
