@@ -8,7 +8,7 @@
 int shell(char **argv)
 {
 	size_t buffsize = 0;
-	char *buff = NULL, *cmd;
+	char *buff = NULL, *cmd, *tmp;
 	int tty;
 
 	tty = isatty(STDIN_FILENO);
@@ -22,20 +22,21 @@ int shell(char **argv)
 	{
 		while (1)
 		{
-			printf("($) ");
+			printf("$ ");
 			getline(&buff, &buffsize, stdin);
 
 			if (_strcmp(buff, "exit\n") == 0)
 				break;
 
-			cmd = prep_string(buff);
-			cmd = is_cmd_exist(cmd);
+			tmp = prep_string(buff);
+			cmd = is_cmd_exist(tmp);
 
 			if (cmd == NULL)
 				perror(argv[0]);
 			else
 			{
 				command(cmd);
+				free(buff);
 				free(cmd);
 			}
 		}
@@ -54,21 +55,22 @@ int shell(char **argv)
 int non_interactive(char **argv)
 {
 	size_t buffsize = 0;
-	char *buff = NULL, *cmd;
+	char *buff = NULL, *tmp, *cmd;
 
 	while (getline(&buff, &buffsize, stdin) != -1)
 	{
 		if (_strcmp(buff, "exit\n") == 0)
 			break;
 
-		cmd = prep_string(buff);
-		cmd = is_cmd_exist(cmd);
+		tmp = prep_string(buff);
+		cmd = is_cmd_exist(tmp);
 
 		if (cmd == NULL)
 			perror(argv[0]);
 		else
 		{
 			command(cmd);
+			free(buff);
 			free(cmd);
 		}
 	}
@@ -90,7 +92,7 @@ char *prep_string(char *cmd)
 
 	for (i = 0; i < _strlen(cmd); i++)
 	{
-		if (cmd[i] == '\n')
+		if (cmd[i] == '\n' || cmd[i] == ' ')
 		{
 			cmd[i] = '\0';
 			return (cmd);
@@ -114,8 +116,7 @@ char *is_cmd_exist(char *cmd)
 		return (cmd);
 
 	env_path_var = _strdup(getenv("PATH")); /* getenv - not allowed */
-	arg = strtok(env_path_var, ":");
-
+	arg = strtok(env_path_var, ":\0\n");
 
 	while (arg != NULL)
 	{
@@ -123,10 +124,11 @@ char *is_cmd_exist(char *cmd)
 		if (stat(full_path, &st) == 0)
 		{
 			/* found path */
+			free(env_path_var);
 			return (full_path);
 		}
 
-		arg = strtok(NULL, ":");
+		arg = strtok(NULL, ":\0\n");
 		free(full_path);
 	}
 
