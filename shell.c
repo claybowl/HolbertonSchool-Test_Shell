@@ -135,10 +135,17 @@ int command(char *cmd)
 {
 	pid_t my_pid;
 	char *argv[2];
+	struct stat st;
 
 	argv[0] = cmd;
 	argv[1] = NULL;
 
+
+	if (stat(cmd, &st) != 0)
+	{
+		perror(argv[0]);
+		return (0);
+	}
 	my_pid = fork();
 	if (my_pid == -1)
 	{
