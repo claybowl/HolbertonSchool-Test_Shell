@@ -104,3 +104,19 @@ char *_strdup(char *str)
 	return (s);
 
 }
+
+/**
+* g_env - getting env variable
+* Return: 0.
+*/
+int g_env(void)
+{
+	unsigned int i = 0, c = 0;
+
+	for (; environ[i] != NULL; i++)
+	{
+		write(1, environ[c], _strlen(environ[c]));
+		write(1, '\n', 1);
+	}
+	return (0);
+}
