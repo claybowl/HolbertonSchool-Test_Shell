@@ -12,8 +12,7 @@
 #include <fcntl.h>
 
 /* function prototypes */
-int shell(char **argv);
-int non_interactive(char **argv);
+int shell(char **argv, int tty);
 
 int command(char *cmd);
 char *prep_string(char *cmd);

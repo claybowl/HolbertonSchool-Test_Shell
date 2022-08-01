@@ -1,14 +1,13 @@
 #include "main.h"
 
 /**
- * shell - a simple terminal
+ * main - shell main func
+ * @ac: unused
  * @argv: pointer list of args
  * Return: 0
  */
-int shell(char **argv)
+int main(__attribute__((unused))int ac, char **argv)
 {
-	size_t buffsize = 0;
-	char *buff = NULL, *cmd = NULL, *tmp = NULL;
 	int tty = 0;
 
 	tty = isatty(STDIN_FILENO);
@@ -17,68 +16,53 @@ int shell(char **argv)
 		perror(argv[0]);
 		return (2);
 	}
-	if (tty == 1)
-	{
-		while (1)
-		{
-			printf("$ ");
-			getline(&buff, &buffsize, stdin);
-			if (_strcmp(buff, "exit\n") == 0)
-			{
-				if (buff != NULL)
-					free(buff);
-				break;
-			}
-			tmp = prep_string(buff);
-			cmd = is_cmd_exist(tmp);
-			if (cmd == NULL)
-				perror(argv[0]);
-			else
-			{
-				command(cmd);
-				if (_strcmp(tmp, cmd) != 0)
-					free(cmd);
-			}
-			if (buff != NULL)
-				free(buff);
-		}
-		return (0);
-	}
 	else
-		non_interactive(argv);
+		shell(argv, tty);
+
 	return (0);
 }
 /**
- * non_interactive - shell functionality for non interactive mode
+ * shell - high level shell loop
  *
  * @argv: pointer array of args
+ * @tty: is/is not tty
  * Return: 0
  */
-int non_interactive(char **argv)
+int shell(char **argv, int tty)
 {
 	size_t buffsize = 0;
-	char *buff = NULL, *tmp = NULL, *cmd = NULL;
-
-	while (getline(&buff, &buffsize, stdin) != -1)
+	char *buff = NULL, *tmp = NULL; /**cmd = NULL*/
+	int valid_input = 1;
+	while (valid_input)
 	{
+		if (tty == 1)
+			printf("$ ");
+		
+		valid_input = getline(&buff, &buffsize, stdin);
 		if (_strcmp(buff, "exit\n") == 0)
 		{
-			free(buff);
 			break;
 		}
-
 		tmp = prep_string(buff);
+		
+		if (tmp == NULL)
+			perror(argv[0]);
+		/*
 		cmd = is_cmd_exist(tmp);
-
+		
 		if (cmd == NULL)
 			perror(argv[0]);
 		else
 		{
 			command(cmd);
-			free(buff);
-			free(cmd);
+			if (_strcmp(tmp, cmd) != 0)
+				free(cmd);
 		}
+		*/
+		command(tmp);
 	}
+	free(buff);
+	buff = NULL;
 	return (0);
 }
 
@@ -122,7 +106,7 @@ char *is_cmd_exist(char *cmd)
 
 	env_path_var = _strdup(getenv("PATH")); /* getenv - not allowed */
 
-	arg = strtok(env_path_var, ":\0\n");
+	arg = strtok(env_path_var, ":");
 
 	while (arg != NULL)
 	{
