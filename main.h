@@ -11,6 +11,8 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
+extern char **environ;
+
 /* function prototypes */
 int shell(char **argv, int tty);
 

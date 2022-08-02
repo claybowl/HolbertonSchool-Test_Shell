@@ -111,12 +111,12 @@ char *_strdup(char *str)
 */
 int g_env(void)
 {
-	unsigned int i = 0, c = 0;
+	unsigned int i = 0;
 
 	for (; environ[i] != NULL; i++)
 	{
-		write(1, environ[c], _strlen(environ[c]));
-		write(1, '\n', 1);
+		write(1, environ[i], _strlen(environ[i]));
+		write(1, "\n", 1);
 	}
 	return (0);
 }
